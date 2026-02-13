@@ -202,8 +202,10 @@
     state.bullets.forEach(b=>{b.x+=b.vx; b.y+=b.vy;});
     state.bullets = state.bullets.filter(b=>b.y>-60 && b.y<h+60 && b.x>-60 && b.x<w+60);
 
-    // spawn logic
+    // spawn logic: when all enemies dead, wait cooldown then spawn next wave
     if(state.enemies.length===0 && state.waveCooldown<=0){
+      state.wave++;
+      state.waveCooldown = 80;
       spawnWave();
     } else if(state.enemies.length===0){
       state.waveCooldown--;
@@ -269,8 +271,6 @@
       }
     });
     state.drops = state.drops.filter(d=>d.y < h+60);
-
-    if(state.enemies.length===0 && state.waveCooldown<=0){ state.wave++; state.waveCooldown=60; }
   }
 
   function drawTextCentered(text, y, size=28){
