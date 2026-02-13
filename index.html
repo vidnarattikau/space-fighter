@@ -148,6 +148,7 @@
   ];
 
   function startGame(){
+    if(state.playing) return;
     // Audio may be blocked until a user gesture in some in-app browsers; visuals should still work.
     try { if(!audioCtx) audioCtx = new AudioCtx(); } catch (e) { /* ignore */ }
     Object.assign(state, {playing:true, paused:false, over:false, time:0, score:0, streak:0, wave:1, nextWaveAt:6000,
