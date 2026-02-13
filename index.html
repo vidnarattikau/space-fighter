@@ -148,7 +148,8 @@
   ];
 
   function startGame(){
-    if(!audioCtx) audioCtx = new AudioCtx();
+    // Audio may be blocked until a user gesture in some in-app browsers; visuals should still work.
+    try { if(!audioCtx) audioCtx = new AudioCtx(); } catch (e) { /* ignore */ }
     Object.assign(state, {playing:true, paused:false, over:false, time:0, score:0, streak:0, wave:1, nextWaveAt:6000,
       bullets:[], enemies:[], particles:[], drops:[], enemyBullets:[], shake:0,
       player:{x:w/2,y:h-100,vx:0,vy:0,hp:100,maxHp:100,speed:5,weapon:0,cooldown:0,bombs:1,inv:0},
@@ -252,6 +253,8 @@
     requestAnimationFrame(loop);
     if(state.paused){ draw(); return; }
     update(); draw();
+    // Debug: expose state for troubleshooting in console
+    window.__sf_state = state;
   }
 
   function update(){
