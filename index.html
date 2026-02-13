@@ -160,9 +160,21 @@
 
   // Controls
   const keys={};
-  window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true; if(e.key===' ') e.preventDefault(); if(e.key==='p') togglePause(); if(e.key==='b') useBomb();});
+  window.addEventListener('keydown',e=>{
+    const k=e.key.toLowerCase();
+    keys[k]=true;
+    // Space/Enter also starts the game from the title screen
+    if(!state.playing && !state.over && (e.key===' ' || e.key==='Enter')) startGame();
+    if(e.key===' ') e.preventDefault();
+    if(k==='p') togglePause();
+    if(k==='b') useBomb();
+  });
   window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
-  game.addEventListener('pointerdown',e=>{shoot();});
+  // If the Start overlay can't receive clicks in some in-app browsers, allow tap-anywhere to start.
+  game.addEventListener('pointerdown',e=>{
+    if(!state.playing && !state.over){ startGame(); return; }
+    shoot();
+  });
 
   // Touch controls
   const joyBase = document.getElementById('joystickBase');
