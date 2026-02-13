@@ -20,8 +20,11 @@
     color: #e8f4ff;
   }
   html, body { margin:0; padding:0; background: var(--bg); overflow:hidden; }
-  canvas { display:block; width:100vw; height:100vh; background: transparent; }
-  #ui {
+  /* Stack canvases on top of each other (bg under game). Without this, the 2nd canvas sits below the 1st and is off-screen. */
+  canvas { display:block; position:fixed; inset:0; width:100vw; height:100vh; background: transparent; }
+  #bg { z-index: 0; }
+  #game { z-index: 1; }
+  #ui { z-index: 2;
     position: fixed; inset: 0; pointer-events: none; color:#e8f4ff;
   }
   #hud { position: absolute; top:16px; left:16px; font-size:14px; line-height:1.6; text-shadow: var(--glow); }
@@ -94,7 +97,11 @@
     dpr = window.devicePixelRatio || 1;
     w = window.innerWidth; h = window.innerHeight;
     [bg, game].forEach(c => { c.width = w * dpr; c.height = h * dpr; c.style.width = w+'px'; c.style.height = h+'px'; });
-    ctx.scale(dpr, dpr); ctxBg.scale(dpr, dpr);
+    // Reset transforms before scaling to avoid accumulating scale on repeated resizes
+    ctx.setTransform(1,0,0,1,0,0);
+    ctxBg.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr, dpr);
+    ctxBg.scale(dpr, dpr);
   }
   resize();
   window.addEventListener('resize', () => location.reload());
